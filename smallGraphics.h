@@ -39,8 +39,10 @@ public:
         rgb.y = 0;
         rgb.z = 0;
 
-        int sx = x;
-        int sy = y;
+        //Die beiden lines waren der fix
+        int sx = static_cast<int>(x * (width - 1));
+        int sy = static_cast<int>(y * (height - 1));
+
         if (sx >= 0 && sy >= 0 && sx < windowWidth && sy < windowHeight)
         {
             unsigned bytePerPixel = channels;
@@ -76,6 +78,10 @@ uint32_t rgb_value(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
     return ((uint32_t)a << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | b;
 }
 
+//Potentielle errors
+//-Clipping error mit texture coordinates
+//-Eventuell fehler beim zugreifen auf die pixel koordinaten
+
 void TexturedTriangle(int x1, int y1, float u1, float v1, float w1,
     int x2, int y2, float u2, float v2, float w2,
     int x3, int y3, float u3, float v3, float w3,
@@ -83,31 +89,31 @@ void TexturedTriangle(int x1, int y1, float u1, float v1, float w1,
     KrabbTex &tex
     )
 {
-    if(y2 < y1)
+    if (y2 < y1)
     {
-        swap(y2, y1);
-        swap(x2, x1);
-        swap(u2, u1);
-        swap(v2, v1);
-        swap(w2, w1);
+        swap(y1, y2);
+        swap(x1, x2);
+        swap(u1, u2);
+        swap(v1, v2);
+        swap(w1, w2);
     }
 
-    if(y3 < y2)
+    if (y3 < y1)
+    {
+        swap(y1, y3);
+        swap(x1, x3);
+        swap(u1, u3);
+        swap(v1, v3);
+        swap(w1, w3);
+    }
+
+    if (y3 < y2)
     {
         swap(y2, y3);
         swap(x2, x3);
         swap(u2, u3);
         swap(v2, v3);
         swap(w2, w3);
-    }
-
-    if(y3 < y1)
-    {
-        swap(y3, y1);
-        swap(x3, x1);
-        swap(u3, u1);
-        swap(v3, v1);
-        swap(w3, w1);
     }
 
     //Steigung der linie A
@@ -167,7 +173,7 @@ void TexturedTriangle(int x1, int y1, float u1, float v1, float w1,
             float tstep = 1.0f / ((float)(bx - ax));
             float t = 0.0f;
 
-            for(int j = ax; j<=bx; j++)
+            for(int j = ax; j<bx; j++)
             {
                 //Lineare Interpolation entlang der textur
                 tex_u = (1.0f - t) * tex_su + t * tex_eu;

@@ -210,7 +210,7 @@ int main()
     float t = 0.0f;
 
     KrabbTex tex;
-    tex.LoadTexture("Kirby.jpg", W, H);
+    tex.LoadTexture("planks.png", W, H);
     float val = 0.0f;
     while (fenster_loop(&f) == 0) 
     {
@@ -310,13 +310,13 @@ int main()
         }
 
         vec3d col;
-        col.x = 0;
+        col.x = 255;
         col.y = 0;
         col.z = 0;
         for(auto &triangleProjected : trianglesToShow)
         {
             //render triangle
-            //DrawTriangle(f, triangleProjected, col);
+            DrawTriangle(f, triangleProjected, col);
             
             
              TexturedTriangle(triangleProjected.points[0].x, triangleProjected.points[0].y, triangleProjected.texUVs[0].u, triangleProjected.texUVs[0].v, triangleProjected.texUVs[0].w,
